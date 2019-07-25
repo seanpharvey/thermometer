@@ -1,0 +1,14 @@
+{
+  "name": "moovision",
+  "version": "0.0.1",
+  "description": "A an app that can tell you if what you're looking at is a cow.",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Sean Harvey",
+  "license": "ISC",
+  "dependencies": {
+    "angular-cli": "^1.0.0-beta.28.3"
+  }
+}
