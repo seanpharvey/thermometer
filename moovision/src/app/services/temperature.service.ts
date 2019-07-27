@@ -10,7 +10,13 @@ import { ajax } from "rxjs/ajax";
 export class TemperatureService {
     constructor(private http: HttpClient) {}
 
-    callTemp() {
-        return this.http.get('https://api.weather.gov/gridpoints/LWX/25,31');
+    callTemp(x=0) {
+        let data = this.http.get('https://api.weather.gov/gridpoints/LWX/25,31');
+        let temperature = this.getTemp(data['properties'].apparentTemperature.values[x]['value']);
+        return temperature;
+    }
+
+    getTemp(celcius) {
+        return ((celcius * 9/5) + 32);
     }
 }
