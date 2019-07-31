@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TemperatureService } from '../services/temperature.service';
 import { HttpClient } from 'selenium-webdriver/http';
 import {Moment } from 'moment';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-temperature-reading',
@@ -9,35 +10,28 @@ import {Moment } from 'moment';
   styleUrls: ['./temperature-reading.component.css']
 })
 export class TemperatureReadingComponent implements OnInit {
-  temperature = 0;
+  temperature = null;
   response = null;
   i = 0;
 
   constructor(private temperatureService:TemperatureService) { 
   }
 
-  getTime() {
-    setInterval(() => {
-      console.log(this.i); 
-      this.getTemp(this.i++);
-    }, 1000);
+  private callApi(x=0) {
+    let currentTemp = null;
+    this.temperatureService.callWeather().subscribe(data =>{
+        return data['properties'].apparentTemperature.values[x].value;
+    });
+
+    return currentTemp;
   }
 
-  convertCtoF(celcius) {
+  getTemp(celcius:number) {
     return ((celcius * 9/5) + 32);
-  }
-
-  getTemp(x=0) {
-    this.temperatureService.callTemp()
-      .subscribe((data: String) => {
-        let raw = {temp: data['properties']};
-        this.temperature = this.convertCtoF(raw.temp.apparentTemperature.values[x]['value']);
-        return this.response;
-      });
-  }
+}
 
   ngOnInit() {
-    this.getTime();
+    this.temperature =  this.getTemp(this.callApi());
   }
 
 }

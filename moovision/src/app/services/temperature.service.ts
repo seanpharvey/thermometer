@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { interval, Observable } from "rxjs";
 import { ajax } from "rxjs/ajax";
+import { analyzeAndValidateNgModules } from '@angular/compiler';
 
 
 
@@ -8,15 +10,11 @@ import { ajax } from "rxjs/ajax";
     providedIn: 'root'
 })
 export class TemperatureService {
+    seconds:number = 10000;
+
     constructor(private http: HttpClient) {}
 
-    callTemp(x=0) {
-        let data = this.http.get('https://api.weather.gov/gridpoints/LWX/25,31');
-        let temperature = this.getTemp(data['properties'].apparentTemperature.values[x]['value']);
-        return temperature;
-    }
-
-    getTemp(celcius) {
-        return ((celcius * 9/5) + 32);
+    callWeather(x=0): Observable<any>{
+        interval(this.seconds).subscribe((n) => this.http.get('https://api.weather.gov/gridpoints/LWX/25,31'));
     }
 }
