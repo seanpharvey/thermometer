@@ -1,22 +1,23 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ajax } from "rxjs/ajax";
-
-
+import { interval } from "rxjs";
+import { mergeMap } from "rxjs/operators";
 
 @Injectable({
     providedIn: 'root'
 })
 export class TemperatureService {
+    apiUrl: string = 'https://api.weather.gov/gridpoints/LWX/25,31';
+
     constructor(private http: HttpClient) {}
 
-    callTemp(x=0) {
-        let data = this.http.get('https://api.weather.gov/gridpoints/LWX/25,31');
-        let temperature = this.getTemp(data['properties'].apparentTemperature.values[x]['value']);
-        return temperature;
+    requestWeatherData(){
+        return this.http
+        .get(this.apiUrl);
     }
 
-    getTemp(celcius) {
-        return ((celcius * 9/5) + 32);
+    pollWeather(seconds=10000){
+        return interval(seconds)
+        .pipe(mergeMap(() => this.requestWeatherData()));
     }
 }

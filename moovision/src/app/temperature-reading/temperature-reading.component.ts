@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TemperatureService } from '../services/temperature.service';
-import { HttpClient } from 'selenium-webdriver/http';
-import {Moment } from 'moment';
+import { mergeMap } from 'rxjs/operators';
+import { convertCelToFar } from '../helpers/temperature';
 
 @Component({
   selector: 'app-temperature-reading',
@@ -9,35 +9,22 @@ import {Moment } from 'moment';
   styleUrls: ['./temperature-reading.component.css']
 })
 export class TemperatureReadingComponent implements OnInit {
-  temperature = 0;
+  temperature = null;
   response = null;
-  i = 0;
+  x = 0;
 
   constructor(private temperatureService:TemperatureService) { 
   }
 
-  getTime() {
-    setInterval(() => {
-      console.log(this.i); 
-      this.getTemp(this.i++);
-    }, 1000);
-  }
-
-  convertCtoF(celcius) {
-    return ((celcius * 9/5) + 32);
-  }
-
-  getTemp(x=0) {
-    this.temperatureService.callTemp()
-      .subscribe((data: String) => {
-        let raw = {temp: data['properties']};
-        this.temperature = this.convertCtoF(raw.temp.apparentTemperature.values[x]['value']);
-        return this.response;
-      });
+  private getWeather() {
+    this.temperatureService.pollWeather(50000)
+    .subscribe(data => {
+      this.temperature = convertCelToFar(data['properties'].apparentTemperature.values[0].value);
+    });
   }
 
   ngOnInit() {
-    this.getTime();
+    this.getWeather();  
   }
 
 }
