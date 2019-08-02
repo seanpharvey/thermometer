@@ -17,7 +17,7 @@ export class TemperatureReadingComponent implements OnInit {
   }
 
   private getWeather() {
-    this.temperatureService.pollWeather()
+    this.temperatureService.pollWeather(50000)
     .subscribe(data => {
       this.temperature = convertCelToFar(data['properties'].apparentTemperature.values[0].value);
     });
