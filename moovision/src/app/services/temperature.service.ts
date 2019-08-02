@@ -16,8 +16,8 @@ export class TemperatureService {
         .get(this.apiUrl);
     }
 
-    pollWeather(interval=10000){
-        return interval(interval)
+    pollWeather(seconds=10000){
+        return interval(seconds)
         .pipe(mergeMap(() => this.requestWeatherData()));
     }
 }
