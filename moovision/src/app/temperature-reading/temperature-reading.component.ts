@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TemperatureService } from '../services/temperature.service';
-import { HttpClient } from 'selenium-webdriver/http';
-import {Moment } from 'moment';
-import { Observable } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-temperature-reading',
@@ -12,26 +10,25 @@ import { Observable } from 'rxjs';
 export class TemperatureReadingComponent implements OnInit {
   temperature = null;
   response = null;
-  i = 0;
+  x = 0;
 
   constructor(private temperatureService:TemperatureService) { 
   }
 
-  private callApi(x=0) {
-    let currentTemp = null;
-    this.temperatureService.callWeather().subscribe(data =>{
-        return data['properties'].apparentTemperature.values[x].value;
+  private getWeather() {
+    this.temperatureService.pollWeather()
+    .subscribe(data => {
+      this.temperature = this.convertTemp(data['properties'].apparentTemperature.values[0].value);
     });
-
-    return currentTemp;
   }
 
-  getTemp(celcius:number) {
+  convertTemp(celcius) {
+    console.log("celcius", celcius);
     return ((celcius * 9/5) + 32);
 }
 
   ngOnInit() {
-    this.temperature =  this.getTemp(this.callApi());
+    this.getWeather();  
   }
 
 }
