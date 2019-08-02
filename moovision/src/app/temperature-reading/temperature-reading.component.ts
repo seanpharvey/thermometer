@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TemperatureService } from '../services/temperature.service';
-import { mergeMap } from 'rxjs/operators';
-import { convertCelToFar } from '../helpers/temperature';
+import { Temperature } from '../helpers/temperature';
 
 @Component({
   selector: 'app-temperature-reading',
@@ -13,13 +12,15 @@ export class TemperatureReadingComponent implements OnInit {
   response = null;
   x = 0;
 
-  constructor(private temperatureService:TemperatureService) { 
-  }
+  constructor(
+    private temperatureService:TemperatureService,
+    private helper:Temperature
+  ) {}
 
   private getWeather() {
     this.temperatureService.pollWeather(50000)
     .subscribe(data => {
-      this.temperature = convertCelToFar(data['properties'].apparentTemperature.values[0].value);
+      this.temperature = this.helper.convertCelToFar(data['properties'].apparentTemperature.values[0].value);
     });
   }
 
