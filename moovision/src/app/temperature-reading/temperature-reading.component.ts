@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TemperatureService } from '../services/temperature.service';
 import { mergeMap } from 'rxjs/operators';
+import { convertCelToFar } from '../helpers/temperature';
 
 @Component({
   selector: 'app-temperature-reading',
@@ -18,14 +19,9 @@ export class TemperatureReadingComponent implements OnInit {
   private getWeather() {
     this.temperatureService.pollWeather()
     .subscribe(data => {
-      this.temperature = this.convertTemp(data['properties'].apparentTemperature.values[0].value);
+      this.temperature = convertCelToFar(data['properties'].apparentTemperature.values[0].value);
     });
   }
-
-  convertTemp(celcius) {
-    console.log("celcius", celcius);
-    return ((celcius * 9/5) + 32);
-}
 
   ngOnInit() {
     this.getWeather();  

@@ -1,5 +1,5 @@
 export class Temperature {
-    convertCeltoFar(celcius:number){
+    convertCelToFar(celcius:number){
         return ((celcius * 9/5) + 32);
     }
 }
