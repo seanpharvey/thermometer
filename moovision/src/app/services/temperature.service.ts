@@ -25,6 +25,7 @@ export class TemperatureService {
 
     pollWeather(seconds=10000){
         return interval(seconds)
+        .do
         .pipe(
             mergeMap(() => this.requestWeatherData()),
             mergeMap(() => this.getCurrentWeather())
