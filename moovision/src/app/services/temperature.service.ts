@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { interval } from "rxjs";
 import { mergeMap } from "rxjs/operators";
-import { Moment } from "moment";
+import * as moment from "moment";
 
 @Injectable({
     providedIn: 'root'
@@ -18,15 +18,16 @@ export class TemperatureService {
     }
 
     getCurrentWeather() {
-        let now = Moment.now();
+        let now = moment.now();
         console.log(now);
+        return now.toString();
     }
 
     pollWeather(seconds=10000){
         return interval(seconds)
-        .pipe(mergeMap(
-            () => this.requestWeatherData(), 
-            () => this.getCurrentWeather()
-        ));
+        .pipe(
+            mergeMap(() => this.requestWeatherData()),
+            mergeMap(() => this.getCurrentWeather())
+        );
     }
 }
